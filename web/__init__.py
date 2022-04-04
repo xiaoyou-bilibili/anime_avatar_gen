@@ -2,6 +2,7 @@ from flask import Flask, request, Response, render_template
 from flask_cors import CORS
 import json
 from arithmetic.gan import generate
+from arithmetic.stylegan3.gen_images import  generate_images
 
 
 # 初始化flaskAPP
@@ -34,16 +35,22 @@ def detect_image():
     })
 
 
-# 基于图片的目标检测
-@app.route('/yolov5/detect_video', methods=['POST'])
+# 基于stylegan3的动漫头像生成
+@app.route('/stylegan3/generate', methods=['POST','GET'])
 def detect_vide():
-    # 获取请求的视频
-    file = request.files['file']
-    # 保存一下这个视频
-    file.save("./web/static/detect.mp4")
-    res = detect_video()
+    # 获取所有的参数
+    data = request.form
+    print(data)
+    generate_images(
+        seed=int(data.get("seed")),
+        truncation_psi=float(data.get("truncation_psi")),
+        noise_mode=data.get("noise_mode"),
+        rotate=float(data.get("rotate")),
+    )
     # 返回json类型字符串
-    return return_json(res)
+    return return_json({
+        "res": "/static/style_img.png"
+    })
 
 
 # 主页显示HTML

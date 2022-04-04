@@ -11,7 +11,7 @@ from torchnet.meter import AverageValueMeter
 class Config(object):
     data_path = 'data/'  # 数据集存放路径
     num_workers = 4  # 多进程加载数据所用的进程数
-    image_size = 10  # 图片尺寸
+    image_size = 96  # 图片尺寸
     batch_size = 256
     max_epoch = 200
     lr1 = 2e-4  # 生成器的学习率
@@ -19,9 +19,8 @@ class Config(object):
     beta1 = 0.5  # Adam优化器的beta1参数
     gpu = True  # 是否使用GPU
 
-
     save_path = 'imgs/'  # 生成图片保存路径
-    vis = True  # 是否使用visdom可视化
+    vis = False  # 是否使用visdom可视化
     env = 'GAN'  # visdom的env
     plot_every = 20  # 每间隔20 batch，visdom画图一次
     debug_file = '/tmp/debuggan'  # 存在该文件则进入debug模式
@@ -30,8 +29,6 @@ class Config(object):
     save_every = 10  # 没10个epoch保存一次模型
     netd_path = 'model/gan/netd.pth' #预训练模型
     netg_path = 'model/gan/netg.pth'
-
-
 
     # 生成图片用到的参数
     # 从512张生成的图片中保存最好的64张
@@ -49,10 +46,8 @@ class Config(object):
 opt = Config()
 
 
-def train(**kwargs):
-    for k_, v_ in kwargs.items():
-        setattr(opt, k_, v_)
-
+if __name__ == '__main__':
+    print("开始训练")
     device = t.device('cuda') if opt.gpu else t.device('cpu')
     if opt.vis:
         from visualize import Visualizer
@@ -75,7 +70,7 @@ def train(**kwargs):
                                          )
 
     # 网络
-    netg, netd = NetG(opt), NetD(opt)
+    netg, netd = NetG(opt.ngf, opt.nz), NetD(opt.ndf)
     map_location = lambda storage, loc: storage
     if opt.netd_path:
         netd.load_state_dict(t.load(opt.netd_path, map_location=map_location))
@@ -147,9 +142,9 @@ def train(**kwargs):
 
         if (epoch + 1) % opt.save_every == 0:
             # 保存模型、图片
-            tv.utils.save_image(fix_fake_imgs.data[:64], '%s/%s.png' % (opt.save_path, epoch), normalize=True,
-                                range=(-1, 1))
-            t.save(netd.state_dict(), 'checkpoints/netd_%s.pth' % epoch)
-            t.save(netg.state_dict(), 'checkpoints/netg_%s.pth' % epoch)
+            # tv.utils.save_image(fix_fake_imgs.data[:64], '%s/%s.png' % (opt.save_path, epoch), normalize=True,
+            #                     range=(-1, 1))
+            t.save(netd.state_dict(), 'model/gan/netd_%s.pth' % epoch)
+            t.save(netg.state_dict(), 'model/gan/netg_%s.pth' % epoch)
             errord_meter.reset()
             errorg_meter.reset()

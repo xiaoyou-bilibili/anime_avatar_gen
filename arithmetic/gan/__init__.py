@@ -8,8 +8,8 @@ nz = 100 # 噪声维度
 ngf = 64 # 生成器feature map数
 ndf = 64 # 判别器feature map数
 # 模型路径
-netd_path = 'model/gan/netd.pth'  # 预训练模型
-netg_path = 'model/gan/netg.pth'
+netd_path = 'model/gan/netd_199.pth'  # 预训练模型
+netg_path = 'model/gan/netg_199.pth'
 # 最后生成的路径
 gen_img = 'web/static/gan_img.png'
 

@@ -21,11 +21,11 @@
 <div style="display: flex;align-content: center;justify-content: center">
     <div class="layui-tab" style="width: 80%">
           <ul class="layui-tab-title">
-            <li class="layui-this">基于GAN</li>
-            <li>基于StyleGan3</li>
+            <li>基于GAN</li>
+            <li class="layui-this">基于StyleGan3</li>
           </ul>
           <div class="layui-tab-content">
-            <div class="layui-tab-item layui-show">
+            <div class="layui-tab-item">
                 <div style="display: flex;margin-top: 30px">
                     <fieldset class="layui-elem-field">
                       <legend>生成结果</legend>
@@ -68,31 +68,49 @@
                     </form>
                 </div>
             </div>
-            <div class="layui-tab-item">
-                <button type="button" class="layui-btn" id="video">
-                  <i class="layui-icon">&#xe67c;</i>上传视频
-                </button>
+            <div class="layui-tab-item layui-show">
                 <div style="display: flex;margin-top: 30px">
                     <fieldset class="layui-elem-field">
-                      <legend>原始视频</legend>
-                      <div class="layui-field-box">
-                          <video id="video_detect_row" controls width="100%">
-                                <source src=""
-                                        type="video/mp4">
-                                不支持
-                            </video>
+                      <legend>生成结果</legend>
+                      <div class="layui-field-box" style="text-align: center">
+                        <img id="style_res"  alt="" src="">
                       </div>
                     </fieldset>
-                    <fieldset class="layui-elem-field" style="margin-left: 30px">
-                      <legend>识别结果</legend>
-                      <div class="layui-field-box">
-                          <video id="video_detect_res" controls width="100%">
-                            <source src=""
-                                    type="video/mp4">
-                            不支持
-                          </video>
+                    <!-- 输入框 -->
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">随机数种子</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="seed" required  lay-verify="required" value="20" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">psi截断</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="truncation_psi" required  lay-verify="required" value="1" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">噪声模式</label>
+                            <div class="layui-input-block">
+                                <input type="radio" name="noise_mode" value="const" title="const" checked>
+                                <input type="radio" name="noise_mode" value="random" title="random" >
+                                <input type="radio" name="noise_mode" value="none" title="none" >
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">旋转角度</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="rotate" required  lay-verify="required" value="0"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="style">立即生成</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
                       </div>
-                    </fieldset>
+                    </form>
                 </div>
             </div>
           </div>
@@ -113,7 +131,7 @@ function close() {
 // 生成动漫头像
 layui.use('form', function(){
   var form = layui.form;
-  //监听提交
+  // 基于gan
   form.on('submit(gan)', function(data){
       // 显示加载窗口
       load()
@@ -121,6 +139,17 @@ layui.use('form', function(){
       $.post("/gan/generate", data.field, (data, _)=>{
           close()
           document.getElementById("gan_res").src = data.res + "?t=" + Math.random()
+      })
+    return false;
+  });
+  // 基于style gan3
+  form.on('submit(style)', function(data){
+      // 显示加载窗口
+      load()
+      // 发送post请求
+      $.post("/stylegan3/generate", data.field, (data, _)=>{
+          close()
+          document.getElementById("style_res").src = data.res + "?t=" + Math.random()
       })
     return false;
   });
