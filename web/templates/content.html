@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动漫头像生成器</title>
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" />
+    <script src="https://www.layuicdn.com/layui/layui.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/layer/3.5.1/layer.js"></script>
+<!--    引入jQuery-->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        fieldset.layui-elem-field{
+            width: 49%;
+        }
+        .layui-field-box img{
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div style="display: flex;align-content: center;justify-content: center">
+    <div class="layui-tab" style="width: 80%">
+          <ul class="layui-tab-title">
+            <li class="layui-this">基于GAN</li>
+            <li>基于StyleGan3</li>
+          </ul>
+          <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <div style="display: flex;margin-top: 30px">
+                    <fieldset class="layui-elem-field">
+                      <legend>生成结果</legend>
+                      <div class="layui-field-box">
+                        <img id="gan_res"  alt="" src="">
+                      </div>
+                    </fieldset>
+                    <!-- 输入框 -->
+                    <form class="layui-form" action="">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">总生成数</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="gen_search_num" required  lay-verify="required" value="512" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">最终图片数</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="gen_num" required  lay-verify="required" value="64" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">噪声均值</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="gen_mean" required  lay-verify="required" value="0" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">噪声方差</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="gen_std" required  lay-verify="required" value="1"  autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-input-block">
+                            <button class="layui-btn" lay-submit lay-filter="gan">立即生成</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                      </div>
+                    </form>
+                </div>
+            </div>
+            <div class="layui-tab-item">
+                <button type="button" class="layui-btn" id="video">
+                  <i class="layui-icon">&#xe67c;</i>上传视频
+                </button>
+                <div style="display: flex;margin-top: 30px">
+                    <fieldset class="layui-elem-field">
+                      <legend>原始视频</legend>
+                      <div class="layui-field-box">
+                          <video id="video_detect_row" controls width="100%">
+                                <source src=""
+                                        type="video/mp4">
+                                不支持
+                            </video>
+                      </div>
+                    </fieldset>
+                    <fieldset class="layui-elem-field" style="margin-left: 30px">
+                      <legend>识别结果</legend>
+                      <div class="layui-field-box">
+                          <video id="video_detect_res" controls width="100%">
+                            <source src=""
+                                    type="video/mp4">
+                            不支持
+                          </video>
+                      </div>
+                    </fieldset>
+                </div>
+            </div>
+          </div>
+    </div>
+</div>
+<script>
+// 选项卡依赖element模块
+layui.use('element', function(){});
+// 弹窗函数
+let index = null
+function load() {
+    index = layer.load(1, {shade: [0.6, '#000000']})
+}
+function close() {
+    layer.close(index)
+}
+
+// 生成动漫头像
+layui.use('form', function(){
+  var form = layui.form;
+  //监听提交
+  form.on('submit(gan)', function(data){
+      // 显示加载窗口
+      load()
+      // 发送post请求
+      $.post("/gan/generate", data.field, (data, _)=>{
+          close()
+          document.getElementById("gan_res").src = data.res + "?t=" + Math.random()
+      })
+    return false;
+  });
+});
+
+
+// 上传功能
+layui.use('upload', function(){
+  var upload = layui.upload;
+  // 图片检测接口
+  // 视频检测接口
+  upload.render({
+    elem: '#video',
+    url: '/yolov5/detect_video', //上传接口
+    accept: 'file',
+    before: function (){
+       load()
+    },
+    done: function(res){
+          close()
+          // 修改一下图片，这里我们设置一个随机数，目的是为了刷新图片
+          document.getElementById("video_detect_res").src = res.detect + "?t=" + Math.random()
+          document.getElementById("video_detect_row").src = res.row + "?t=" + Math.random()
+    }
+  });
+});
+
+</script>
+</body>
+</html>
