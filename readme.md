@@ -87,6 +87,7 @@ python train_style.py --outdir=data/out --cfg=stylegan3-t --data=data/animation.
 ```
 
 # 安装依赖
+```bash
 pip install -r requirements.txt
 python main.py
 ``
