@@ -5,6 +5,7 @@ from flask_cors import CORS
 import json
 from arithmetic.gan import generate
 from arithmetic.stylegan3.gen_images import  generate_images
+from arithmetic.stylegan3.gen_video import generate_images as generate_videos
 
 
 # 初始化flaskAPP
@@ -21,7 +22,7 @@ def return_json(data):
 
 # 基于gan的动漫头像生成
 @app.route('/gan/generate', methods=['POST'])
-def detect_image():
+def generate_image_gan():
     # 获取所有的参数
     data = request.form
     # 可以通过 request 的 args 属性来获取参数
@@ -39,7 +40,7 @@ def detect_image():
 
 # 基于stylegan3的动漫头像生成
 @app.route('/stylegan3/generate', methods=['POST','GET'])
-def detect_vide():
+def generate_image():
     # 获取所有的参数
     data = request.form
     print(data)
@@ -60,6 +61,17 @@ def detect_vide():
         "res": "/static/style_img.png",
         'seed': seed
     })
+
+# 基于stylegan3的video生成，现在用不到
+@app.route('/stylegan3/generate/video', methods=['POST','GET'])
+def video():
+    generate_videos()
+    # 返回生成的图片和种子
+    return return_json({
+        "res": "/static/style_img.png",
+        'seed': "1"
+    })
+
 
 
 # 主页显示HTML

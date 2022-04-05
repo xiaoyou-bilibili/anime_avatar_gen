@@ -63,15 +63,31 @@ python arithmetic/stylegan3/dataset_tool.py --source=data/anime_face --dest=data
 #### 开始训练
 如果GPU显存不够大话可以把batch改小一点，我的是3060，这里改成了8
 - outdir 表示模型的输出路径
-- cfg
+- cfg 表示配置信息，可以选择stylegan3-t、stylegan3-r、stylegan2，我们默认选第一个就可以了
 - data 表示数据集地址，这里需要使用前面转换后的内容
+- gpus 表示GPU个数，我们就一个GPU，所以选1
 - batch 表示一次取多少条数据，如果显存不够大的话可以改小一点
-- 
+- gamma 表示正规化权重，保持默认
+- mirror 数据集X轴翻转
+详细配置说明参考：https://github.com/NVlabs/stylegan3/blob/main/docs/configs.md
 ```bash
 python train_style.py --outdir=data/out --cfg=stylegan3-t --data=data/animation.zip --gpus=1 --batch=8 --gamma=8.2 --mirror=1
 ```
 
 ## 项目运行
+
+自己把训练好的模型放到model目录下，像下面这样
+```python
+.
+├── gan
+│   ├── netd.pth
+│   ├── netg.pth
+└── stylegan3
+    ├── network-snapshot-1600.pkl
+```
+
 ``bash
+# 安装依赖
+pip install -r requirements.txt
 python main.py
 ``

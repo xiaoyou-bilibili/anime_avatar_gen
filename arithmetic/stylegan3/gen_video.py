@@ -19,7 +19,7 @@ import scipy.interpolate
 import torch
 from tqdm import tqdm
 
-import legacy
+import arithmetic.stylegan3.legacy as legacy
 
 #----------------------------------------------------------------------------
 
@@ -120,26 +120,16 @@ def parse_tuple(s: Union[str, Tuple[int,int]]) -> Tuple[int, int]:
         return (int(m.group(1)), int(m.group(2)))
     raise ValueError(f'cannot parse tuple {s}')
 
-#----------------------------------------------------------------------------
-
-@click.command()
-@click.option('--network', 'network_pkl', help='Network pickle filename', required=True)
-@click.option('--seeds', type=parse_range, help='List of random seeds', required=True)
-@click.option('--shuffle-seed', type=int, help='Random seed to use for shuffling seed order', default=None)
-@click.option('--grid', type=parse_tuple, help='Grid width/height, e.g. \'4x3\' (default: 1x1)', default=(1,1))
-@click.option('--num-keyframes', type=int, help='Number of seeds to interpolate through.  If not specified, determine based on the length of the seeds array given by --seeds.', default=None)
-@click.option('--w-frames', type=int, help='Number of frames to interpolate between latents', default=120)
-@click.option('--trunc', 'truncation_psi', type=float, help='Truncation psi', default=1, show_default=True)
-@click.option('--output', help='Output .mp4 filename', type=str, required=True, metavar='FILE')
+# 风格化视频生成
 def generate_images(
-    network_pkl: str,
-    seeds: List[int],
-    shuffle_seed: Optional[int],
-    truncation_psi: float,
-    grid: Tuple[int,int],
-    num_keyframes: Optional[int],
-    w_frames: int,
-    output: str
+    network_pkl: str='model/stylegan3/network-snapshot-1600.pkl',
+    seeds: List[int]=(range(32)),
+    shuffle_seed: Optional[int]=None,
+    truncation_psi: float=1,
+    grid: Tuple[int,int]=(4,2),
+    num_keyframes: Optional[int]=None,
+    w_frames: int=120,
+    output: str='web/static/style.mp4'
 ):
     """Render a latent vector interpolation video.
 

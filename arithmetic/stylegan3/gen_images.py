@@ -67,7 +67,7 @@ def make_transform(translate: Tuple[float,float], angle: float):
 
 
 def generate_images(
-    network_pkl: str = "model/stylegan3/network-snapshot-001600.pkl",
+    network_pkl: str = "model/stylegan3/network-snapshot-1600.pkl",
     seed:int=50,
     truncation_psi: float=1,
     noise_mode: str ='const',
@@ -118,6 +118,7 @@ def generate_images(
 
     img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
     img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
+    # 保存我们的图片
     PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/style_img.png')
 
 
