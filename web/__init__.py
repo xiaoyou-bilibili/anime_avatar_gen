@@ -1,3 +1,5 @@
+import random
+
 from flask import Flask, request, Response, render_template
 from flask_cors import CORS
 import json
@@ -41,15 +43,22 @@ def detect_vide():
     # 获取所有的参数
     data = request.form
     print(data)
+    seed = int(data.get("seed"))
+    # 如果不填的话就自动生成
+    if seed < 0:
+        seed = random.randint(0, 4294967295)
+    print("种子", seed)
     generate_images(
-        seed=int(data.get("seed")),
+        seed=seed,
         truncation_psi=float(data.get("truncation_psi")),
         noise_mode=data.get("noise_mode"),
         rotate=float(data.get("rotate")),
+        network_pkl="model/stylegan3/%s" % data.get("model")
     )
-    # 返回json类型字符串
+    # 返回生成的图片和种子
     return return_json({
-        "res": "/static/style_img.png"
+        "res": "/static/style_img.png",
+        'seed': seed
     })
 
 

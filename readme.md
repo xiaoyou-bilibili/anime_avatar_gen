@@ -38,7 +38,18 @@ if __name__ == '__main__':
             print("%s错误" % filename)
 ```
 
-### 项目2（基于style-gan3）
+#### 数据可视化
+```bash
+# 使用visdom启动一个服务，默认监听8097端口
+visdom
+```
+修改训练代码的`train_gan.py`的`vis = True`然后训练的时候就可以看到实时的训练结果了
+
+![](.readme_images/bedf05c5.png)
+
+训练好的模型都会存到`model/gan`目录下
+
+### 基于style-gan3的训练
 原项目地址： https://github.com/NVlabs/stylegan3
 
 数据集地址：https://www.kaggle.com/datasets/lukexng/animefaces-512x512
@@ -50,6 +61,12 @@ python arithmetic/stylegan3/dataset_tool.py --source=data/anime_face --dest=data
 ```
 
 #### 开始训练
+如果GPU显存不够大话可以把batch改小一点，我的是3060，这里改成了8
+- outdir 表示模型的输出路径
+- cfg
+- data 表示数据集地址，这里需要使用前面转换后的内容
+- batch 表示一次取多少条数据，如果显存不够大的话可以改小一点
+- 
 ```bash
 python train_style.py --outdir=data/out --cfg=stylegan3-t --data=data/animation.zip --gpus=1 --batch=8 --gamma=8.2 --mirror=1
 ```

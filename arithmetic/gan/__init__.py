@@ -32,19 +32,20 @@ def generate(
     device = t.device('cuda')
     # 如果是使用CPU那么就把下面这个注释掉
     # device = t.device('cpu')
+    # 加载我们的模型，
     netg, netd = NetG(ngf, nz).eval(), NetD(ndf).eval()
     map_location = lambda storage, loc: storage
     netd.load_state_dict(t.load(netd_path, map_location=map_location))
     netg.load_state_dict(t.load(netg_path, map_location=map_location))
     netd.to(device)
     netg.to(device)
-    # 设置噪声信息
+    # 设置噪声信息，根据我们设置的总生成数来设置随机值
     noises = t.randn(gen_search_num, nz, 1, 1).normal_(gen_mean, gen_std)
     noises = noises.to(device)
     # 生成图片，并计算图片在判别器的分数
     fake_img = netg(noises)
     scores = netd(fake_img).detach()
-    # 挑选最好的某几张
+    # 对我们的图片进行排序，选择较好图片
     indexs = scores.topk(gen_num)[1]
     result = []
     for ii in indexs:

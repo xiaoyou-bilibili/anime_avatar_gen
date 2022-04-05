@@ -9,6 +9,7 @@ class NetG(nn.Module):
 
     def __init__(self, ngf, nz):
         super(NetG, self).__init__()
+        # 这里定义我们的神经网络模块
         self.main = nn.Sequential(
             # 输入是一个nz维度的噪声，我们可以认为它是一个1*1*nz的feature map
             nn.ConvTranspose2d(nz, ngf * 8, 4, 1, 0, bias=False),

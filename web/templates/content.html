@@ -72,16 +72,23 @@
                 <div style="display: flex;margin-top: 30px">
                     <fieldset class="layui-elem-field">
                       <legend>生成结果</legend>
-                      <div class="layui-field-box" style="text-align: center">
-                        <img id="style_res"  alt="" src="">
+                      <div class="layui-field-box" style="text-align: center;">
+                          <div id="seed"></div>
+                          <img id="style_res"  alt="" src="">
                       </div>
                     </fieldset>
                     <!-- 输入框 -->
                     <form class="layui-form" action="">
                         <div class="layui-form-item">
-                            <label class="layui-form-label">随机数种子</label>
+                            <label class="layui-form-label">模型名字</label>
                             <div class="layui-input-block">
-                              <input type="text" name="seed" required  lay-verify="required" value="20" autocomplete="off" class="layui-input">
+                              <input type="text" name="model" required  lay-verify="required" value="network-snapshot-1600.pkl" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">随机种子</label>
+                            <div class="layui-input-block">
+                              <input type="text" name="seed" required  lay-verify="required" value="7" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -150,6 +157,7 @@ layui.use('form', function(){
       $.post("/stylegan3/generate", data.field, (data, _)=>{
           close()
           document.getElementById("style_res").src = data.res + "?t=" + Math.random()
+           document.getElementById("seed").innerText = "随机种子:"+data.seed
       })
     return false;
   });
