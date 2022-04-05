@@ -77,7 +77,7 @@ python train_style.py --outdir=data/out --cfg=stylegan3-t --data=data/animation.
 ## 项目运行
 
 自己把训练好的模型放到model目录下，像下面这样
-```python
+```bash
 .
 ├── gan
 │   ├── netd.pth
@@ -86,7 +86,6 @@ python train_style.py --outdir=data/out --cfg=stylegan3-t --data=data/animation.
     ├── network-snapshot-1600.pkl
 ```
 
-``bash
 # 安装依赖
 pip install -r requirements.txt
 python main.py
