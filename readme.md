@@ -1,6 +1,9 @@
 # 动漫头像生成项目
 > 欢迎关注B站：https://space.bilibili.com/343147393
 
+## 视频介绍
+B站：https://www.bilibili.com/video/BV1MF411G7UU
+
 ## 效果展示
 ### 基于GAN
 ![](.readme_images/4d3b6d39.png)
