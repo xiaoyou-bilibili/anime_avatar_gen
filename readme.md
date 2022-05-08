@@ -4,6 +4,8 @@
 ## 视频介绍
 B站：https://www.bilibili.com/video/BV1MF411G7UU
 
+YouTube：https://youtu.be/wUlh4dFh_YU
+
 ## 效果展示
 ### 基于GAN
 ![](.readme_images/4d3b6d39.png)
