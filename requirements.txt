@@ -1,11 +1,13 @@
 numpy~=1.22.3
 Flask~=2.1.1
+Flask-Cors~=3.0.10
 opencv-python~=4.5.5.64
 tqdm~=4.64.0
-torchnet~=0.0.5.1
+torchnet~=0.0.4
 visdom~=0.1.8.9
-git+https://github.com/pytorch/tnt.git@master
 requests~=2.27.1
 Pillow~=9.0.1
 scipy~=1.8.0
 click~=8.1.2
+imageio~=2.22.4
+ninja~=1.11.1
